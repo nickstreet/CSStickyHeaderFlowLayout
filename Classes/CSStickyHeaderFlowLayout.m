@@ -101,11 +101,17 @@ NSString *const CSStickyHeaderParallaxHeader = @"CSStickyHeaderParallexHeader";
         CGFloat y = MIN(maxY - self.parallaxHeaderMinimumReferenceSize.height, bounds.origin.y + self.collectionView.contentInset.top);
         CGFloat height = MAX(1, -y + maxY);
 
-
         CGFloat maxHeight = self.parallaxHeaderReferenceSize.height;
         CGFloat minHeight = self.parallaxHeaderMinimumReferenceSize.height;
         CGFloat progressiveness = (height - minHeight)/(maxHeight - minHeight);
         currentAttribute.progressiveness = progressiveness;
+
+        BOOL overscrolling = bounds.origin.y < 0;
+        if (self.fixedHeaderOnOverscroll && overscrolling) {
+            y = 0;
+            currentAttribute.progressiveness = 1;
+            height = maxY;
+        }
 
         // if zIndex < 0 would prevents tap from recognized right under navigation bar
         currentAttribute.zIndex = 0;
